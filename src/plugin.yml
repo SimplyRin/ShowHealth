@@ -1,0 +1,5 @@
+main: net.simplyrin.showhealth.ShowHealth
+name: ShowHealth
+version: 1.0-SNAPSHOT
+author: SimplyRin
+softdepend: [PermissionsEx]
