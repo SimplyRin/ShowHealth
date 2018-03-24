@@ -1,1 +1,4 @@
 Message: "&6%player &eis on &d%hp &eHP!"
+Bridge:
+  LuckPerms: true
+  PermissionsEx: false

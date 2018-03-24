@@ -8,6 +8,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.Contexts;
+import me.lucko.luckperms.api.LuckPermsApi;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 /**
@@ -16,6 +19,7 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 public class ShowHealth extends JavaPlugin implements Listener {
 
 	private boolean pexBridge = false;
+	private boolean luckBridge = false;
 
 	@Override
 	public void onEnable() {
@@ -23,6 +27,13 @@ public class ShowHealth extends JavaPlugin implements Listener {
 		this.getServer().getPluginManager().registerEvents(this, this);
 
 		this.pexBridge = this.getServer().getPluginManager().isPluginEnabled("PermissionsEx");
+		if(this.pexBridge) {
+			this.getServer().getConsoleSender().sendMessage("§b[ShowHealth] PermissionsEx bridge has been enabled!");
+		}
+		this.luckBridge = this.getServer().getPluginManager().isPluginEnabled("LuckPerms");
+		if(this.luckBridge) {
+			this.getServer().getConsoleSender().sendMessage("§b[ShowHealth] LuckPerms bridge has been enabled!");
+		}
 	}
 
 	@EventHandler
@@ -56,8 +67,17 @@ public class ShowHealth extends JavaPlugin implements Listener {
 
 		String message = this.getConfig().getString("Message");
 
-		if(this.pexBridge) {
-			String prefixColor = "";
+		String prefixColor = "";
+		if(this.luckBridge && this.getConfig().getBoolean("Bridge.LuckPerms")) {
+			LuckPermsApi api = LuckPerms.getApi();
+			try {
+				prefixColor = api.getUser(player.getUniqueId()).getCachedData().getMetaData(Contexts.allowAll()).getPrefix().substring(0, 2);
+				message = message.replace("%player", prefixColor +  player.getName());
+			} catch (Exception e) {
+			}
+		}
+
+		else if(this.pexBridge && this.getConfig().getBoolean("Bridge.PermissionsEx")) {
 			try {
 				prefixColor = PermissionsEx.getUser(player).getGroups()[0].getPrefix().substring(0, 2);
 			} catch (Exception e) {
