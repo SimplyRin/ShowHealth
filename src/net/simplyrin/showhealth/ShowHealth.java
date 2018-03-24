@@ -74,6 +74,7 @@ public class ShowHealth extends JavaPlugin implements Listener {
 				prefixColor = api.getUser(player.getUniqueId()).getCachedData().getMetaData(Contexts.allowAll()).getPrefix().substring(0, 2);
 				message = message.replace("%player", prefixColor +  player.getName());
 			} catch (Exception e) {
+				message = message.replace("%player", player.getName());
 			}
 		}
 
